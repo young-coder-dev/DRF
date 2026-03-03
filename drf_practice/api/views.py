@@ -10,6 +10,10 @@ class ProductListAPIView(generics.ListAPIView):
     queryset=Product.objects.all()
     serializer_class=ProductSerializer
 
+    def get_queryset(self):
+        qs=super().get_queryset()
+        return qs.filter(price__lt=20)
+
 # @api_view(["GET"])
 # def product_list(request):
 #     products=Product.objects.all()
