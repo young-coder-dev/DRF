@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.db.models import Max
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated,AllowAny,IsAdminUser
 from rest_framework.views import APIView
 from django.shortcuts import redirect
 # Create your views here.
@@ -70,6 +70,13 @@ class ProductInfoAPIView(APIView):
 class ProductCreateAPIView(generics.ListCreateAPIView):
     queryset=Product.objects.all()
     serializer_class=ProductCreateSerializer
+
     def create(self, request, *args, **kwargs):
         response=super().create(request, *args, **kwargs)
         return redirect('create')
+    
+    def get_permissions(self):
+        self.permission_classes=[AllowAny]
+        if self.request.method=='POST':
+            self.permission_classes=[IsAdminUser]
+        return super().get_permissions()
